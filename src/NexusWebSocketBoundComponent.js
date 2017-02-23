@@ -1,6 +1,10 @@
 (function () {
     "use strict";
 
+    var fluid = fluid || require("infusion");
+    var gpii = fluid.registerNamespace("gpii");
+    var WebSocket = WebSocket || fluid.require('ws');
+
     fluid.defaults("gpii.nexusWebSocketBoundComponent", {
         gradeNames: "fluid.modelComponent",
         members: {

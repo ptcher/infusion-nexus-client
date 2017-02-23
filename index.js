@@ -1,1 +1,2 @@
-require("./src/nexusUtils.js");
+require("./src/NexusUtil.js");
+require("./src/NexusWebSocketBoundComponent.js");

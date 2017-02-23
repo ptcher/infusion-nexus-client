@@ -11,6 +11,8 @@
         "grunt": "0.4.5",
         "grunt-contrib-jshint": "1.0.0",
         "grunt-jsonlint": "1.0.7",
-        "infusion": "2.0.0-dev.20160309T145652Z.9f515ec"
-    }
+        "infusion": "2.0.0",
+        "ws": "2.0.3"
+    },
+    "private": true
 }
