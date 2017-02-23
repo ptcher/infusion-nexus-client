@@ -1,9 +1,10 @@
-(function () {
+var fluid_2_0_0 = fluid_2_0_0 || require("infusion");
+var WebSocket = WebSocket || fluid.require("ws");
+
+(function (fluid, WebSocket) {
     "use strict";
 
-    var fluid = fluid || require("infusion");
     var gpii = fluid.registerNamespace("gpii");
-    var WebSocket = WebSocket || fluid.require('ws');
 
     fluid.defaults("gpii.nexusWebSocketBoundComponent", {
         gradeNames: "fluid.modelComponent",
@@ -86,4 +87,4 @@
         }));
     };
 
-}());
+}(fluid_2_0_0, WebSocket));
