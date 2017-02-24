@@ -1,6 +1,8 @@
 var fluid_2_0_0 = fluid_2_0_0 || require("infusion");
 var WebSocket = WebSocket || fluid.require("ws");
 
+// TODO: Support peer management in browser
+
 (function (fluid, WebSocket) {
     "use strict";
 
@@ -15,6 +17,8 @@ var WebSocket = WebSocket || fluid.require("ws");
             nexusBoundModelPath: "",
             sendsChangesToNexus: false,
             receivesChangesFromNexus: false,
+            managesPeer: false,
+            nexusPeerComponentOptions: null, // Will be used if managesPeer is true
             websocket: null // Will be set at onCreate
         },
         invokers: {
@@ -34,8 +38,15 @@ var WebSocket = WebSocket || fluid.require("ws");
                 ]
             }
         },
+        events: {
+            onPeerConstructed: null
+        },
         listeners: {
-            "onCreate.bindNexusModel": {
+            "onCreate.constructPeer": {
+                funcName: "gpii.nexusWebSocketBoundComponent.constructPeer",
+                args: [ "{that}", "{that}.events.onPeerConstructed" ]
+            },
+            "onPeerConstructed.bindNexusModel": {
                 funcName: "gpii.nexusWebSocketBoundComponent.bindModel",
                 args: [
                     "{that}",
@@ -55,6 +66,21 @@ var WebSocket = WebSocket || fluid.require("ws");
         }
     });
 
+    gpii.nexusWebSocketBoundComponent.constructPeer = function (that, onPeerConstructedEvent) {
+        if (that.managesPeer) {
+            gpii.constructNexusPeer(
+                that.nexusHost,
+                that.nexusPort,
+                that.nexusPeerComponentPath,
+                that.nexusPeerComponentOptions
+            ).then(function () {
+                onPeerConstructedEvent.fire();
+            });
+        } else {
+            onPeerConstructedEvent.fire();
+        }
+    };
+
     gpii.nexusWebSocketBoundComponent.bindModel = function (that, shouldRegisterMessageListener, messageListener) {
         var bindModelUrl = fluid.stringTemplate("ws://%host:%port/bindModel/%componentPath/%modelPath", {
             host: that.nexusHost,
@@ -70,7 +96,7 @@ var WebSocket = WebSocket || fluid.require("ws");
 
     gpii.nexusWebSocketBoundComponent.registerModelListener = function (shouldRegisterModelChangeListener, applier, modelPath, modelChangeListener) {
         if (shouldRegisterModelChangeListener) {
-            // TODO segs here?
+            // TODO: Segs here?
             applier.modelChanged.addListener(modelPath, modelChangeListener);
         }
     };

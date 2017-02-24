@@ -4,9 +4,9 @@ var fluid = require("infusion");
 var gpii = fluid.registerNamespace("gpii");
 var http = require("http");
 
-fluid.registerNamespace("gpii.nexus.util");
+fluid.registerNamespace("gpii.nexus.utils");
 
-gpii.nexus.util.sendRequestWithJsonBody = function (host, port, options, body) {
+gpii.nexus.utils.sendRequestWithJsonBody = function (host, port, options, body) {
     options = fluid.extend({
         host: host,
         port: port,
@@ -28,14 +28,14 @@ gpii.nexus.util.sendRequestWithJsonBody = function (host, port, options, body) {
 };
 
 gpii.constructNexusPeer = function (host, port, componentPath, componentOptions) {
-    return gpii.nexus.util.sendRequestWithJsonBody(host, port, {
+    return gpii.nexus.utils.sendRequestWithJsonBody(host, port, {
         method: "POST",
         path: "/components/" + componentPath
     }, componentOptions);
 };
 
 gpii.addNexusRecipe = function (host, port, recipeName, recipeContents) {
-    return gpii.nexus.util.sendRequestWithJsonBody(host, port, {
+    return gpii.nexus.utils.sendRequestWithJsonBody(host, port, {
         method: "PUT",
         path: "/recipes/" + recipeName
     }, recipeContents);
