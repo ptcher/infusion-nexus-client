@@ -36,10 +36,15 @@ var WebSocket = WebSocket || fluid.require("ws");
                     "{that}.websocket",
                     "{arguments}.0" // value
                 ]
+            },
+            deleteNexusPeerComponent: {
+                funcName: "gpii.nexusWebSocketBoundComponent.deletePeer",
+                args: [ "{that}", "{that}.events.onPeerDeleted" ]
             }
         },
         events: {
-            onPeerConstructed: null
+            onPeerConstructed: null,
+            onPeerDeleted: null
         },
         listeners: {
             "onCreate.constructPeer": {
@@ -79,6 +84,16 @@ var WebSocket = WebSocket || fluid.require("ws");
         } else {
             onPeerConstructedEvent.fire();
         }
+    };
+
+    gpii.nexusWebSocketBoundComponent.deletePeer = function (that, onPeerDeletedEvent) {
+        gpii.deleteNexusPeer(
+            that.nexusHost,
+            that.nexusPort,
+            that.nexusPeerComponentPath
+        ).then(function () {
+            onPeerDeletedEvent.fire();
+        });
     };
 
     gpii.nexusWebSocketBoundComponent.bindModel = function (that, shouldRegisterMessageListener, messageListener) {
