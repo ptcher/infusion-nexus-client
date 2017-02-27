@@ -27,6 +27,13 @@ gpii.nexus.utils.sendRequestWithJsonBody = function (host, port, options, body) 
     return promise;
 };
 
+gpii.writeNexusDefaults = function (host, port, gradeName, gradeDefaults) {
+    return gpii.nexus.utils.sendRequestWithJsonBody(host, port, {
+        method: "PUT",
+        path: "/defaults/" + gradeName
+    }, gradeDefaults);
+};
+
 gpii.constructNexusPeer = function (host, port, componentPath, componentOptions) {
     return gpii.nexus.utils.sendRequestWithJsonBody(host, port, {
         method: "POST",
