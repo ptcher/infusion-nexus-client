@@ -41,7 +41,7 @@ gpii.constructNexusPeer = function (host, port, componentPath, componentOptions)
     }, componentOptions);
 };
 
-gpii.deleteNexusPeer = function (host, port, componentPath) {
+gpii.destroyNexusPeer = function (host, port, componentPath) {
     var options = {
         host: host,
         port: port,
