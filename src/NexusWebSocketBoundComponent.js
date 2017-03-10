@@ -25,9 +25,9 @@ var WebSocket = WebSocket || fluid.require("ws");
             nexusMessageListener: {
                 funcName: "gpii.nexusWebSocketBoundComponent.messageListener",
                 args: [
-                    "{arguments}.0",
+                    "{that}",
                     "{that}.nexusBoundModelPath",
-                    "{that}.applier"
+                    "{arguments}.0" // message event object
                 ]
             },
             sendModelChangeToNexus: {
@@ -119,9 +119,9 @@ var WebSocket = WebSocket || fluid.require("ws");
         }
     };
 
-    gpii.nexusWebSocketBoundComponent.messageListener = function (evt, modelPath, applier) {
+    gpii.nexusWebSocketBoundComponent.messageListener = function (that, modelPath, evt) {
         var value = JSON.parse(evt.data);
-        applier.change(modelPath, value);
+        gpii.nexusWebSocketBoundComponent.setModel(that, modelPath, value);
     };
 
     gpii.nexusWebSocketBoundComponent.sendModelChangeToNexus =  function (websocket, value) {
@@ -130,5 +130,57 @@ var WebSocket = WebSocket || fluid.require("ws");
             value: value
         }));
     };
+
+    // TODO: Move somewhere central and make suitable for general usage
+    // TODO: This really needs tests
+    gpii.nexusWebSocketBoundComponent.setModel = function (component, path, value) {
+        var oldValue = fluid.get(component.model, path);
+
+        var diffOptions = {changes: 0, unchanged: 0, changeMap: {}};
+        fluid.model.diff(oldValue, value, diffOptions);
+
+        gpii.nexusWebSocketBoundComponent.applyModelChanges(
+            component,
+            fluid.pathUtil.parseEL(path),
+            value,
+            diffOptions.changeMap,
+            []
+        );
+    };
+
+    gpii.nexusWebSocketBoundComponent.applyModelChanges = function (component, targetModelSegs, value, changeMap, changeSegs) {
+        if (changeMap === "ADD") {
+            // The whole model value is new
+            component.applier.change(targetModelSegs, value, "ADD");
+        } else if (fluid.isPlainObject(changeMap, true)) {
+            // Something within the model value has changed
+            fluid.each(changeMap, function (change, seg) {
+                var currentChangeSegs = changeSegs.concat([seg]);
+                if (change === "ADD") {
+                    component.applier.change(
+                        targetModelSegs.concat(currentChangeSegs),
+                        fluid.get(value, currentChangeSegs),
+                        "ADD"
+                    );
+                } else if (change === "DELETE") {
+                    component.applier.change(
+                        targetModelSegs.concat(currentChangeSegs),
+                        null,
+                        "DELETE"
+                    );
+                } else if (fluid.isPlainObject(change, true)) {
+                    // Recurse down the tree of changes
+                    gpii.nexusWebSocketBoundComponent.applyModelChanges(
+                        component,
+                        targetModelSegs,
+                        value,
+                        change,
+                        currentChangeSegs
+                    );
+                }
+            });
+        }
+    };
+
 
 }(fluid_2_0_0, WebSocket));
