@@ -44,13 +44,18 @@ var WebSocket = WebSocket || fluid.require("ws");
         },
         events: {
             onPeerConstructed: null,
+            onErrorConstructingPeer: null,
             onWebsocketConnected: null,
             onPeerDestroyed: null
         },
         listeners: {
             "onCreate.constructPeer": {
                 funcName: "gpii.nexusWebSocketBoundComponent.constructPeer",
-                args: [ "{that}", "{that}.events.onPeerConstructed" ]
+                args: [
+                    "{that}",
+                    "{that}.events.onPeerConstructed",
+                    "{that}.events.onErrorConstructingPeer"
+                ]
             },
             "onPeerConstructed.bindNexusModel": {
                 funcName: "gpii.nexusWebSocketBoundComponent.bindModel",
@@ -73,7 +78,7 @@ var WebSocket = WebSocket || fluid.require("ws");
         }
     });
 
-    gpii.nexusWebSocketBoundComponent.constructPeer = function (that, onPeerConstructedEvent) {
+    gpii.nexusWebSocketBoundComponent.constructPeer = function (that, onPeerConstructedEvent, onErrorConstructingPeerEvent) {
         if (that.managesPeer) {
             gpii.constructNexusPeer(
                 that.nexusHost,
@@ -82,6 +87,9 @@ var WebSocket = WebSocket || fluid.require("ws");
                 that.nexusPeerComponentOptions
             ).then(function () {
                 onPeerConstructedEvent.fire();
+            }, function (error) {
+                // TODO: What's the best mechanism to communicate failure to construct the peer?
+                onErrorConstructingPeerEvent.fire(error);
             });
         } else {
             onPeerConstructedEvent.fire();
@@ -109,7 +117,9 @@ var WebSocket = WebSocket || fluid.require("ws");
         if (shouldRegisterMessageListener) {
             that.websocket.onmessage = messageListener;
         }
-        onWebsocketConnectedEvent.fire();
+        that.websocket.onopen = function () {
+            onWebsocketConnectedEvent.fire();
+        };
     };
 
     gpii.nexusWebSocketBoundComponent.registerModelListener = function (shouldRegisterModelChangeListener, applier, modelPath, modelChangeListener) {

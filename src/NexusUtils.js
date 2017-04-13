@@ -17,8 +17,23 @@ gpii.nexus.utils.sendRequestWithJsonBody = function (host, port, options, body) 
 
     var promise = fluid.promise();
 
-    var req = http.request(options, function () {
+    var req = http.request(options);
+
+    req.on("response", function () {
         promise.resolve(null);
+    });
+
+    req.on("error", function (error) {
+        promise.reject({
+            isError: true,
+            message: fluid.stringTemplate("Error: %code %method %host:%port%path", {
+                code: error.code,
+                method: options.method,
+                host: host,
+                port: port,
+                path: options.path
+            })
+        });
     });
 
     req.write(JSON.stringify(body));
