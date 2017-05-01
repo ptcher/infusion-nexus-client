@@ -46,6 +46,7 @@ var WebSocket = WebSocket || fluid.require("ws");
             onPeerConstructed: null,
             onErrorConstructingPeer: null,
             onWebsocketConnected: null,
+            onErrorConnectingWebsocket: null,
             onPeerDestroyed: null
         },
         listeners: {
@@ -63,7 +64,8 @@ var WebSocket = WebSocket || fluid.require("ws");
                     "{that}",
                     "{that}.receivesChangesFromNexus",
                     "{that}.nexusMessageListener",
-                    "{that}.events.onWebsocketConnected"
+                    "{that}.events.onWebsocketConnected",
+                    "{that}.events.onErrorConnectingWebsocket"
                 ]
             },
             "onWebsocketConnected.registerModelListenerForNexus": {
@@ -88,7 +90,7 @@ var WebSocket = WebSocket || fluid.require("ws");
             ).then(function () {
                 onPeerConstructedEvent.fire();
             }, function (error) {
-                // TODO: What's the best mechanism to communicate failure to construct the peer?
+                // TODO: What's the best mechanism to communicate failure?
                 onErrorConstructingPeerEvent.fire(error);
             });
         } else {
@@ -106,7 +108,7 @@ var WebSocket = WebSocket || fluid.require("ws");
         });
     };
 
-    gpii.nexusWebSocketBoundComponent.bindModel = function (that, shouldRegisterMessageListener, messageListener, onWebsocketConnectedEvent) {
+    gpii.nexusWebSocketBoundComponent.bindModel = function (that, shouldRegisterMessageListener, messageListener, onWebsocketConnectedEvent, onErrorConnectingWebsocketEvent) {
         var bindModelUrl = fluid.stringTemplate("ws://%host:%port/bindModel/%componentPath/%modelPath", {
             host: that.nexusHost,
             port: that.nexusPort,
@@ -119,6 +121,10 @@ var WebSocket = WebSocket || fluid.require("ws");
         }
         that.websocket.onopen = function () {
             onWebsocketConnectedEvent.fire();
+        };
+        that.websocket.onerror = function (error) {
+            // TODO: What's the best mechanism to communicate failure?
+            onErrorConnectingWebsocketEvent.fire(error);
         };
     };
 

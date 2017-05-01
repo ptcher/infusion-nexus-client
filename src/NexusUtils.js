@@ -3,6 +3,7 @@
 var fluid = require("infusion");
 var gpii = fluid.registerNamespace("gpii");
 var http = require("http");
+var $ = fluid.registerNamespace("jQuery");
 
 fluid.registerNamespace("gpii.nexus.utils");
 
@@ -24,16 +25,10 @@ gpii.nexus.utils.sendRequestWithJsonBody = function (host, port, options, body) 
     });
 
     req.on("error", function (error) {
-        promise.reject({
+        promise.reject($.extend({
             isError: true,
-            message: fluid.stringTemplate("Error: %code %method %host:%port%path", {
-                code: error.code,
-                method: options.method,
-                host: host,
-                port: port,
-                path: options.path
-            })
-        });
+            message: error.message
+        }, error));
     });
 
     req.write(JSON.stringify(body));
