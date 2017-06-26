@@ -44,10 +44,9 @@ var WebSocket = WebSocket || fluid.require("ws");
         },
         events: {
             onPeerConstructed: null,
-            onErrorConstructingPeer: null,
+            onPeerDestroyed: null,
             onWebsocketConnected: null,
-            onErrorConnectingWebsocket: null,
-            onPeerDestroyed: null
+            onError: null
         },
         listeners: {
             "onCreate.constructPeer": {
@@ -55,7 +54,7 @@ var WebSocket = WebSocket || fluid.require("ws");
                 args: [
                     "{that}",
                     "{that}.events.onPeerConstructed",
-                    "{that}.events.onErrorConstructingPeer"
+                    "{that}.events.onError"
                 ]
             },
             "onPeerConstructed.bindNexusModel": {
@@ -65,7 +64,7 @@ var WebSocket = WebSocket || fluid.require("ws");
                     "{that}.receivesChangesFromNexus",
                     "{that}.nexusMessageListener",
                     "{that}.events.onWebsocketConnected",
-                    "{that}.events.onErrorConnectingWebsocket"
+                    "{that}.events.onError"
                 ]
             },
             "onWebsocketConnected.registerModelListenerForNexus": {
@@ -80,18 +79,14 @@ var WebSocket = WebSocket || fluid.require("ws");
         }
     });
 
-    gpii.nexusWebSocketBoundComponent.constructPeer = function (that, onPeerConstructedEvent, onErrorConstructingPeerEvent) {
+    gpii.nexusWebSocketBoundComponent.constructPeer = function (that, onPeerConstructedEvent, onErrorEvent) {
         if (that.managesPeer) {
-            gpii.constructNexusPeer(
-                that.nexusHost,
-                that.nexusPort,
-                that.nexusPeerComponentPath,
-                that.nexusPeerComponentOptions
+            gpii.constructNexusPeer(that.nexusHost, that.nexusPort,
+                that.nexusPeerComponentPath, that.nexusPeerComponentOptions
             ).then(function () {
                 onPeerConstructedEvent.fire();
             }, function (error) {
-                // TODO: What's the best mechanism to communicate failure?
-                onErrorConstructingPeerEvent.fire(error);
+                onErrorEvent.fire(error);
             });
         } else {
             onPeerConstructedEvent.fire();
@@ -99,16 +94,14 @@ var WebSocket = WebSocket || fluid.require("ws");
     };
 
     gpii.nexusWebSocketBoundComponent.destroyPeer = function (that, onPeerDestroyedEvent) {
-        gpii.destroyNexusPeer(
-            that.nexusHost,
-            that.nexusPort,
+        gpii.destroyNexusPeer(that.nexusHost, that.nexusPort,
             that.nexusPeerComponentPath
         ).then(function () {
             onPeerDestroyedEvent.fire();
         });
     };
 
-    gpii.nexusWebSocketBoundComponent.bindModel = function (that, shouldRegisterMessageListener, messageListener, onWebsocketConnectedEvent, onErrorConnectingWebsocketEvent) {
+    gpii.nexusWebSocketBoundComponent.bindModel = function (that, shouldRegisterMessageListener, messageListener, onWebsocketConnectedEvent, onErrorEvent) {
         var bindModelUrl = fluid.stringTemplate("ws://%host:%port/bindModel/%componentPath/%modelPath", {
             host: that.nexusHost,
             port: that.nexusPort,
@@ -123,8 +116,7 @@ var WebSocket = WebSocket || fluid.require("ws");
             onWebsocketConnectedEvent.fire();
         };
         that.websocket.onerror = function (error) {
-            // TODO: What's the best mechanism to communicate failure?
-            onErrorConnectingWebsocketEvent.fire(error);
+            onErrorEvent.fire(error);
         };
     };
 
