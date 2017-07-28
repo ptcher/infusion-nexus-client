@@ -11,7 +11,7 @@
         "grunt": "0.4.5",
         "grunt-contrib-jshint": "1.0.0",
         "grunt-jsonlint": "1.0.7",
-        "infusion": "simonbates/infusion#FLUID-6158",
+        "infusion": "3.0.0-dev.20170727T201856Z.8c48d077a",
         "ws": "2.0.3"
     },
     "private": true
