@@ -20,33 +20,31 @@ fluid.require("%gpii-nexus/src/test/NexusTestUtils.js");
 
 kettle.loadTestingSupport();
 
-fluid.registerNamespace("gpii.tests.nexus.nexusClientUtils");
+fluid.registerNamespace("gpii.tests.nexusClient.writeNexusDefaults");
 
-gpii.tests.nexus.nexusClientUtils.newGradeOptions = {
+gpii.tests.nexusClient.writeNexusDefaults.newGradeOptions = {
     gradeNames: ["fluid.component"],
-    model: {
-        name1: "hello NexusClientUtils"
-    }
+    name1: "hello NexusClientUtils"
 };
 
-gpii.tests.nexus.nexusClientUtils.testDefs = [
+gpii.tests.nexusClient.writeNexusDefaults.testDefs = [
     {
-        name: "NexusClientUtils Tests",
+        name: "NexusClientUtils writeNexusDefaults tests",
         gradeNames: "gpii.test.nexus.testCaseHolder",
         expect: 3,
         config: {
             configName: "gpii.tests.nexus.config",
             configPath: "%gpii-nexus/tests/configs"
         },
-        testGradeName: "gpii.tests.nexus.nexusClientUtils.newGrade",
+        testGradeName: "gpii.tests.nexusClient.writeNexusDefaults.newGrade",
         sequence: [
             {
                 task: "gpii.writeNexusDefaults",
                 args: [
                     "localhost",
                     "{configuration}.options.serverPort",
-                    "gpii.tests.nexus.nexusClientUtils.newGrade",
-                    gpii.tests.nexus.nexusClientUtils.newGradeOptions
+                    "{tests}.options.testGradeName",
+                    gpii.tests.nexusClient.writeNexusDefaults.newGradeOptions
                 ],
                 resolve: "fluid.identity"
             },
@@ -60,10 +58,8 @@ gpii.tests.nexus.nexusClientUtils.testDefs = [
                     "{arguments}.0",
                     "{readDefaultsRequest}",
                     {
-                        gradeNames: ["fluid.component", "gpii.tests.nexus.nexusClientUtils.newGrade"],
-                        model: {
-                            name1: "hello NexusClientUtils"
-                        }
+                        gradeNames: ["fluid.component", "gpii.tests.nexusClient.writeNexusDefaults.newGrade"],
+                        name1: "hello NexusClientUtils"
                     }
                 ]
             }
@@ -71,4 +67,4 @@ gpii.tests.nexus.nexusClientUtils.testDefs = [
     }
 ];
 
-kettle.test.bootstrapServer(gpii.tests.nexus.nexusClientUtils.testDefs);
+kettle.test.bootstrapServer(gpii.tests.nexusClient.writeNexusDefaults.testDefs);
