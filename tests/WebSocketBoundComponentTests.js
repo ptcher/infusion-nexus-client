@@ -31,9 +31,13 @@ fluid.defaults("gpii.tests.nexusClient.webSocketBoundComponent.testCaseHolder", 
     clientManagesPeer: false,
     clientSendsChangesToNexus: false,
     clientReceivesChangesFromNexus: false,
+    events: {
+        createClient: null
+    },
     components: {
         client: {
             type: "gpii.nexusWebSocketBoundComponent",
+            createOnEvent: "{tests}.events.createClient",
             options: {
                 members: {
                     nexusHost: "localhost",
@@ -81,9 +85,11 @@ gpii.tests.nexusClient.webSocketBoundComponent.managesPeerAndSendsUpdates.testDe
                     "{tests}.options.testComponentPath"
                 ]
             },
-            // TODO: Construct client or initiate connection here
             {
-                event: "{client}.events.onWebsocketConnected",
+                func: "{tests}.events.createClient.fire"
+            },
+            {
+                event: "{that gpii.nexusWebSocketBoundComponent}.events.onWebsocketConnected",
                 listener: "fluid.identity"
             },
             // Change the model value in the client
@@ -131,9 +137,11 @@ gpii.tests.nexusClient.webSocketBoundComponent.managesPeerAndReceivesUpdates.tes
                     "{tests}.options.testComponentPath"
                 ]
             },
-            // TODO: Construct client or initiate connection here
             {
-                event: "{client}.events.onWebsocketConnected",
+                func: "{tests}.events.createClient.fire"
+            },
+            {
+                event: "{that gpii.nexusWebSocketBoundComponent}.events.onWebsocketConnected",
                 listener: "fluid.identity"
             },
             // Change the model value in the Nexus peer
