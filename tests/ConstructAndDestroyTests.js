@@ -33,7 +33,7 @@ gpii.tests.nexusClient.constructAndDestroy.testDefs = [
     {
         name: "NexusClientUtils construct and destroy tests",
         gradeNames: "gpii.test.nexus.testCaseHolder",
-        expect: 4,
+        expect: 6,
         config: {
             configName: "gpii.tests.nexus.config",
             configPath: "%gpii-nexus/tests/configs"
@@ -58,7 +58,8 @@ gpii.tests.nexusClient.constructAndDestroy.testDefs = [
                     "{tests}.options.testComponentPath",
                     gpii.tests.nexusClient.constructAndDestroy.componentOptions
                 ],
-                resolve: "fluid.identity"
+                resolve: "jqUnit.assert",
+                resolveArgs: ["Component construct promise resolved"]
             },
             {
                 func: "gpii.test.nexus.assertComponentModel",
@@ -77,7 +78,8 @@ gpii.tests.nexusClient.constructAndDestroy.testDefs = [
                     "{configuration}.options.serverPort",
                     "{tests}.options.testComponentPath"
                 ],
-                resolve: "fluid.identity"
+                resolve: "jqUnit.assert",
+                resolveArgs: ["Component destroy promise resolved"]
             },
             {
                 func: "gpii.test.nexus.assertNoComponentAtPath",

@@ -31,7 +31,7 @@ gpii.tests.nexusClient.writeNexusDefaults.testDefs = [
     {
         name: "NexusClientUtils writeNexusDefaults tests",
         gradeNames: "gpii.test.nexus.testCaseHolder",
-        expect: 3,
+        expect: 4,
         config: {
             configName: "gpii.tests.nexus.config",
             configPath: "%gpii-nexus/tests/configs"
@@ -46,7 +46,8 @@ gpii.tests.nexusClient.writeNexusDefaults.testDefs = [
                     "{tests}.options.testGradeName",
                     gpii.tests.nexusClient.writeNexusDefaults.newGradeOptions
                 ],
-                resolve: "fluid.identity"
+                resolve: "jqUnit.assert",
+                resolveArgs: ["Write defaults promise resolved"]
             },
             {
                 func: "{readDefaultsRequest}.send"

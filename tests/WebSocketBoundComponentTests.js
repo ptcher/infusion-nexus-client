@@ -70,7 +70,7 @@ gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndSendUpdates.testDefs
     {
         name: "nexusWebSocketBoundComponent manage peer and send updates tests",
         gradeNames: "gpii.tests.nexusClient.webSocketBoundComponent.testCaseHolder",
-        expect: 3,
+        expect: 6,
         config: {
             configName: "gpii.tests.nexus.config",
             configPath: "%gpii-nexus/tests/configs"
@@ -92,7 +92,8 @@ gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndSendUpdates.testDefs
             },
             {
                 event: "{that gpii.nexusWebSocketBoundComponent}.events.onWebsocketConnected",
-                listener: "fluid.identity"
+                listener: "jqUnit.assert",
+                args: ["WebSocket connected"]
             },
             // Change the model value in the client
             {
@@ -113,8 +114,21 @@ gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndSendUpdates.testDefs
                         valueA: "updated"
                     }
                 ]
+            },
+            // Destroy the Nexus peer via the client
+            {
+                func: "{client}.destroyNexusPeerComponent"
+            },
+            {
+                event: "{gpii.tests.nexus.componentRoot}.nexusWebSocketBoundComponentPeer.events.onDestroy",
+                listener: "jqUnit.assert",
+                args: ["Peer destroyed"]
+            },
+            {
+                event: "{client}.events.onPeerDestroyed",
+                listener: "jqUnit.assert",
+                args: ["Peer destroyed"]
             }
-            // TODO: {client}.destroyNexusPeerComponent and verify that peer is destroyed
         ]
     }
 ];
@@ -123,7 +137,7 @@ gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndReceiveUpdates.testD
     {
         name: "nexusWebSocketBoundComponent manage peer and receive updates tests",
         gradeNames: "gpii.tests.nexusClient.webSocketBoundComponent.testCaseHolder",
-        expect: 2,
+        expect: 5,
         config: {
             configName: "gpii.tests.nexus.config",
             configPath: "%gpii-nexus/tests/configs"
@@ -145,7 +159,8 @@ gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndReceiveUpdates.testD
             },
             {
                 event: "{that gpii.nexusWebSocketBoundComponent}.events.onWebsocketConnected",
-                listener: "fluid.identity"
+                listener: "jqUnit.assert",
+                args: ["WebSocket connected"]
             },
             // Change the model value in the Nexus peer
             {
@@ -165,8 +180,21 @@ gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndReceiveUpdates.testD
                     },
                     "{client}.model"
                 ]
+            },
+            // Destroy the Nexus peer via the client
+            {
+                func: "{client}.destroyNexusPeerComponent"
+            },
+            {
+                event: "{gpii.tests.nexus.componentRoot}.nexusWebSocketBoundComponentPeer.events.onDestroy",
+                listener: "jqUnit.assert",
+                args: ["Peer destroyed"]
+            },
+            {
+                event: "{client}.events.onPeerDestroyed",
+                listener: "jqUnit.assert",
+                args: ["Peer destroyed"]
             }
-            // TODO: {client}.destroyNexusPeerComponent and verify that peer is destroyed
         ]
     }
 ];
@@ -175,7 +203,7 @@ gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndSendUpdates.testDe
     {
         name: "nexusWebSocketBoundComponent do not manage peer and send updates tests",
         gradeNames: "gpii.tests.nexusClient.webSocketBoundComponent.testCaseHolder",
-        expect: 4,
+        expect: 6,
         config: {
             configName: "gpii.tests.nexus.config",
             configPath: "%gpii-nexus/tests/configs"
@@ -198,7 +226,8 @@ gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndSendUpdates.testDe
                         }
                     }
                 ],
-                resolve: "fluid.identity"
+                resolve: "jqUnit.assert",
+                resolveArgs: ["Nexus peer constructed"]
             },
             // Construct client
             {
@@ -206,7 +235,8 @@ gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndSendUpdates.testDe
             },
             {
                 event: "{that gpii.nexusWebSocketBoundComponent}.events.onWebsocketConnected",
-                listener: "fluid.identity"
+                listener: "jqUnit.assert",
+                args: ["WebSocket connected"]
             },
             // Check that construction of the client didn't alter the peer
             {
@@ -248,7 +278,7 @@ gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates.tes
     {
         name: "nexusWebSocketBoundComponent do not manage peer and receive updates tests",
         gradeNames: "gpii.tests.nexusClient.webSocketBoundComponent.testCaseHolder",
-        expect: 4,
+        expect: 6,
         config: {
             configName: "gpii.tests.nexus.config",
             configPath: "%gpii-nexus/tests/configs"
@@ -271,7 +301,8 @@ gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates.tes
                         }
                     }
                 ],
-                resolve: "fluid.identity"
+                resolve: "jqUnit.assert",
+                resolveArgs: ["Nexus peer constructed"]
             },
             // Construct client
             {
@@ -279,7 +310,8 @@ gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates.tes
             },
             {
                 event: "{that gpii.nexusWebSocketBoundComponent}.events.onWebsocketConnected",
-                listener: "fluid.identity"
+                listener: "jqUnit.assert",
+                args: ["WebSocket connected"]
             },
             // Check that construction of the client didn't alter the peer
             {
