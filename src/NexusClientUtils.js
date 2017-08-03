@@ -14,9 +14,9 @@ var fluid = require("infusion");
 var gpii = fluid.registerNamespace("gpii");
 var http = require("http");
 
-fluid.registerNamespace("gpii.nexus.utils");
+fluid.registerNamespace("gpii.nexusClientUtils");
 
-gpii.nexus.utils.sendRequestWithJsonBody = function (host, port, options, body) {
+gpii.nexusClientUtils.sendRequestWithJsonBody = function (host, port, options, body) {
     options = fluid.extend({
         host: host,
         port: port,
@@ -34,16 +34,7 @@ gpii.nexus.utils.sendRequestWithJsonBody = function (host, port, options, body) 
     });
 
     req.on("error", function (error) {
-        promise.reject({
-            isError: true,
-            message: fluid.stringTemplate("Error: %code %method %host:%port%path", {
-                code: error.code,
-                method: options.method,
-                host: host,
-                port: port,
-                path: options.path
-            })
-        });
+        promise.reject(gpii.nexusClientUtils.buildErrorObject(options, error));
     });
 
     req.write(JSON.stringify(body));
@@ -52,15 +43,28 @@ gpii.nexus.utils.sendRequestWithJsonBody = function (host, port, options, body) 
     return promise;
 };
 
+gpii.nexusClientUtils.buildErrorObject = function (requestOptions, error) {
+    return {
+        isError: true,
+        message: fluid.stringTemplate("Error: %code %method %host:%port%path", {
+            code: error.code,
+            method: requestOptions.method,
+            host: requestOptions.host,
+            port: requestOptions.port,
+            path: requestOptions.path
+        })
+    };
+};
+
 gpii.writeNexusDefaults = function (host, port, gradeName, gradeDefaults) {
-    return gpii.nexus.utils.sendRequestWithJsonBody(host, port, {
+    return gpii.nexusClientUtils.sendRequestWithJsonBody(host, port, {
         method: "PUT",
         path: "/defaults/" + gradeName
     }, gradeDefaults);
 };
 
 gpii.constructNexusPeer = function (host, port, componentPath, componentOptions) {
-    return gpii.nexus.utils.sendRequestWithJsonBody(host, port, {
+    return gpii.nexusClientUtils.sendRequestWithJsonBody(host, port, {
         method: "POST",
         path: "/components/" + componentPath
     }, componentOptions);
@@ -76,18 +80,17 @@ gpii.destroyNexusPeer = function (host, port, componentPath) {
 
     var promise = fluid.promise();
 
-    var req = http.request(options, function () {
+    var req = http.request(options);
+
+    req.on("response", function () {
         promise.resolve(null);
+    });
+
+    req.on("error", function (error) {
+        promise.reject(gpii.nexusClientUtils.buildErrorObject(options, error));
     });
 
     req.end();
 
     return promise;
-};
-
-gpii.addNexusRecipe = function (host, port, recipeName, recipeContents) {
-    return gpii.nexus.utils.sendRequestWithJsonBody(host, port, {
-        method: "PUT",
-        path: "/recipes/" + recipeName
-    }, recipeContents);
 };
