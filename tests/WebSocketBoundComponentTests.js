@@ -363,7 +363,62 @@ gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates.tes
     }
 ];
 
+// Test error cases with no Nexus running
+
+fluid.defaults("gpii.tests.nexusClient.webSocketBoundComponent.noNexusTestTree", {
+    gradeNames: ["fluid.test.testEnvironment"],
+    serverHost: "localhost",
+    serverPort: 8082,
+    events: {
+        createClient: null
+    },
+    components: {
+        client: {
+            type: "gpii.nexusWebSocketBoundComponent",
+            createOnEvent: "{testEnvironment}.events.createClient",
+            options: {
+                members: {
+                    nexusHost: "{testEnvironment}.options.serverHost",
+                    nexusPort: "{testEnvironment}.options.serverPort",
+                    nexusPeerComponentPath: "someComponentPath",
+                    managesPeer: true,
+                    nexusPeerComponentOptions: {
+                        type: "fluid.component"
+                    }
+                }
+            }
+        },
+        noNexusTester: {
+            type: "gpii.tests.nexusClient.webSocketBoundComponent.noNexusTester"
+        }
+    }
+});
+
+fluid.defaults("gpii.tests.nexusClient.webSocketBoundComponent.noNexusTester", {
+    gradeNames: ["fluid.test.testCaseHolder"],
+    modules: [{
+        name: "nexusWebSocketBoundComponent No Nexus tests",
+        tests: [
+            {
+                name: "Expect error constructing peer",
+                expect: 1,
+                sequence: [
+                    {
+                        func: "{testEnvironment}.events.createClient.fire"
+                    },
+                    {
+                        event: "{testEnvironment gpii.nexusWebSocketBoundComponent}.events.onErrorConstructingPeer",
+                        listener: "jqUnit.assert",
+                        args: ["Error constructing peer"]
+                    }
+                ]
+            }
+        ]
+    }]
+});
+
 kettle.test.bootstrapServer(gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndSendUpdates.testDefs);
 kettle.test.bootstrapServer(gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndReceiveUpdates.testDefs);
 kettle.test.bootstrapServer(gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndSendUpdates.testDefs);
 kettle.test.bootstrapServer(gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates.testDefs);
+fluid.test.runTests(["gpii.tests.nexusClient.webSocketBoundComponent.noNexusTestTree"]);

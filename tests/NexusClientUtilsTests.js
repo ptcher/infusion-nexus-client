@@ -140,14 +140,14 @@ gpii.tests.nexusClientUtils.constructAndDestroy.testDefs = [
     }
 ];
 
-// Without Nexus running
+// Test error cases with no Nexus running
 
 fluid.defaults("gpii.tests.nexusClientUtils.noNexusTestTree", {
     gradeNames: ["fluid.test.testEnvironment"],
     serverHost: "localhost",
     serverPort: 8082,
     components: {
-        recipeProductTester: {
+        noNexusTester: {
             type: "gpii.tests.nexusClientUtils.noNexusTester"
         }
     }
