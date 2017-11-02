@@ -8,6 +8,7 @@
         "url": "https://github.com/simonbates/nexus-client.git"
     },
     "dependencies": {
+        "commander": "2.11.0",
         "infusion": "3.0.0-dev.20170727T201856Z.8c48d077a",
         "ws": "2.0.3"
     },
