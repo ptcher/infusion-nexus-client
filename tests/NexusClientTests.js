@@ -1,5 +1,5 @@
 /*
-Copyright 2017 OCAD University
+Copyright 2017, 2018 OCAD University
 
 Licensed under the New BSD license. You may not use this file except in
 compliance with this License.
@@ -20,39 +20,46 @@ fluid.require("%gpii-nexus/src/test/NexusTestUtils.js");
 
 kettle.loadTestingSupport();
 
-fluid.registerNamespace("gpii.tests.nexusClientUtils.writeNexusDefaults");
-fluid.registerNamespace("gpii.tests.nexusClientUtils.constructAndDestroy");
+fluid.registerNamespace("gpii.tests.nexusClient.writeDefaults");
+fluid.registerNamespace("gpii.tests.nexusClient.constructAndDestroy");
 
-gpii.tests.nexusClientUtils.newGradeOptions = {
+gpii.tests.nexusClient.newGradeOptions = {
     gradeNames: ["fluid.component"],
-    name1: "hello NexusClientUtils"
+    name1: "hello nexusClient"
 };
 
-gpii.tests.nexusClientUtils.componentOptions = {
+gpii.tests.nexusClient.componentOptions = {
     type: "fluid.modelComponent",
     model: {
-        name1: "hello NexusClientUtils"
+        name1: "hello nexusClient"
     }
 };
 
-gpii.tests.nexusClientUtils.writeNexusDefaults.testDefs = [
+gpii.tests.nexusClient.writeDefaults.testDefs = [
     {
-        name: "NexusClientUtils writeNexusDefaults tests",
+        name: "nexusClient writeDefaults tests",
         gradeNames: "gpii.test.nexus.testCaseHolder",
         expect: 4,
         config: {
             configName: "gpii.tests.nexus.config",
             configPath: "%gpii-nexus/tests/configs"
         },
-        testGradeName: "gpii.tests.nexusClientUtils.newGrade",
+        testGradeName: "gpii.tests.nexusClient.newGrade",
+        components: {
+            nexusClient: {
+                type: "gpii.nexusClient",
+                options: {
+                    nexusHost: "localhost",
+                    nexusPort: "{configuration}.options.serverPort"
+                }
+            }
+        },
         sequence: [
             {
-                task: "gpii.writeNexusDefaults",
+                task: "{nexusClient}.writeDefaults",
                 args: [
-                    "localhost",
-                    "{configuration}.options.serverPort",
                     "{tests}.options.testGradeName",
-                    gpii.tests.nexusClientUtils.newGradeOptions
+                    gpii.tests.nexusClient.newGradeOptions
                 ],
                 resolve: "jqUnit.assert",
                 resolveArgs: ["Write defaults promise resolved"]
@@ -67,8 +74,8 @@ gpii.tests.nexusClientUtils.writeNexusDefaults.testDefs = [
                     "{arguments}.0",
                     "{readDefaultsRequest}",
                     {
-                        gradeNames: ["fluid.component", "gpii.tests.nexusClientUtils.newGrade"],
-                        name1: "hello NexusClientUtils"
+                        gradeNames: ["fluid.component", "gpii.tests.nexusClient.newGrade"],
+                        name1: "hello nexusClient"
                     }
                 ]
             }
@@ -76,16 +83,25 @@ gpii.tests.nexusClientUtils.writeNexusDefaults.testDefs = [
     }
 ];
 
-gpii.tests.nexusClientUtils.constructAndDestroy.testDefs = [
+gpii.tests.nexusClient.constructAndDestroy.testDefs = [
     {
-        name: "NexusClientUtils construct and destroy tests",
+        name: "nexusClient construct and destroy tests",
         gradeNames: "gpii.test.nexus.testCaseHolder",
         expect: 6,
         config: {
             configName: "gpii.tests.nexus.config",
             configPath: "%gpii-nexus/tests/configs"
         },
-        testComponentPath: "nexusClientUtilsConstructAndDestroyTestsComponentOne",
+        testComponentPath: "nexusClientConstructAndDestroyTestsComponentOne",
+        components: {
+            nexusClient: {
+                type: "gpii.nexusClient",
+                options: {
+                    nexusHost: "localhost",
+                    nexusPort: "{configuration}.options.serverPort"
+                }
+            }
+        },
         sequence: [
             // Verify that the component doesn't already exist
             {
@@ -98,12 +114,10 @@ gpii.tests.nexusClientUtils.constructAndDestroy.testDefs = [
             },
             // Construct and check that the constructed component model is as expected
             {
-                task: "gpii.constructNexusPeer",
+                task: "{nexusClient}.constructComponent",
                 args: [
-                    "localhost",
-                    "{configuration}.options.serverPort",
                     "{tests}.options.testComponentPath",
-                    gpii.tests.nexusClientUtils.componentOptions
+                    gpii.tests.nexusClient.componentOptions
                 ],
                 resolve: "jqUnit.assert",
                 resolveArgs: ["Component construct promise resolved"]
@@ -114,15 +128,13 @@ gpii.tests.nexusClientUtils.constructAndDestroy.testDefs = [
                     "Model is as expected",
                     "{gpii.tests.nexus.componentRoot}",
                     "{tests}.options.testComponentPath",
-                    gpii.tests.nexusClientUtils.componentOptions.model
+                    gpii.tests.nexusClient.componentOptions.model
                 ]
             },
             // Destroy
             {
-                task: "gpii.destroyNexusPeer",
+                task: "{nexusClient}.destroyComponent",
                 args: [
-                    "localhost",
-                    "{configuration}.options.serverPort",
                     "{tests}.options.testComponentPath"
                 ],
                 resolve: "jqUnit.assert",
@@ -142,33 +154,40 @@ gpii.tests.nexusClientUtils.constructAndDestroy.testDefs = [
 
 // Test error cases with no Nexus running
 
-fluid.defaults("gpii.tests.nexusClientUtils.noNexusTestTree", {
+fluid.defaults("gpii.tests.nexusClient.noNexusTestTree", {
     gradeNames: ["fluid.test.testEnvironment"],
     serverHost: "localhost",
     serverPort: 8082,
     components: {
         noNexusTester: {
-            type: "gpii.tests.nexusClientUtils.noNexusTester"
+            type: "gpii.tests.nexusClient.noNexusTester"
         }
     }
 });
 
-fluid.defaults("gpii.tests.nexusClientUtils.noNexusTester", {
+fluid.defaults("gpii.tests.nexusClient.noNexusTester", {
     gradeNames: ["fluid.test.testCaseHolder"],
+    components: {
+        nexusClient: {
+            type: "gpii.nexusClient",
+            options: {
+                nexusHost: "{testEnvironment}.options.serverHost",
+                nexusPort: "{testEnvironment}.options.serverPort"
+            }
+        }
+    },
     modules: [{
-        name: "NexusClientUtils No Nexus tests",
+        name: "nexusClient No Nexus tests",
         tests: [
             {
-                name: "writeNexusDefaults",
+                name: "writeDefaults",
                 expect: 1,
                 sequence: [
                     {
-                        task: "gpii.writeNexusDefaults",
+                        task: "{nexusClient}.writeDefaults",
                         args: [
-                            "{testEnvironment}.options.serverHost",
-                            "{testEnvironment}.options.serverPort",
                             "someGradeName",
-                            gpii.tests.nexusClientUtils.newGradeOptions
+                            gpii.tests.nexusClient.newGradeOptions
                         ],
                         reject: "jqUnit.assert",
                         rejectArgs: ["Write defaults promise rejected"]
@@ -176,16 +195,14 @@ fluid.defaults("gpii.tests.nexusClientUtils.noNexusTester", {
                 ]
             },
             {
-                name: "constructNexusPeer",
+                name: "constructComponent",
                 expect: 1,
                 sequence: [
                     {
-                        task: "gpii.constructNexusPeer",
+                        task: "{nexusClient}.constructComponent",
                         args: [
-                            "{testEnvironment}.options.serverHost",
-                            "{testEnvironment}.options.serverPort",
                             "someComponentPath",
-                            gpii.tests.nexusClientUtils.componentOptions
+                            gpii.tests.nexusClient.componentOptions
                         ],
                         reject: "jqUnit.assert",
                         rejectArgs: ["Construct component promise rejected"]
@@ -193,14 +210,12 @@ fluid.defaults("gpii.tests.nexusClientUtils.noNexusTester", {
                 ]
             },
             {
-                name: "destroyNexusPeer",
+                name: "destroyComponent",
                 expect: 1,
                 sequence: [
                     {
-                        task: "gpii.destroyNexusPeer",
+                        task: "{nexusClient}.destroyComponent",
                         args: [
-                            "{testEnvironment}.options.serverHost",
-                            "{testEnvironment}.options.serverPort",
                             "someComponentPath"
                         ],
                         reject: "jqUnit.assert",
@@ -212,6 +227,6 @@ fluid.defaults("gpii.tests.nexusClientUtils.noNexusTester", {
     }]
 });
 
-kettle.test.bootstrapServer(gpii.tests.nexusClientUtils.writeNexusDefaults.testDefs);
-kettle.test.bootstrapServer(gpii.tests.nexusClientUtils.constructAndDestroy.testDefs);
-fluid.test.runTests(["gpii.tests.nexusClientUtils.noNexusTestTree"]);
+kettle.test.bootstrapServer(gpii.tests.nexusClient.writeDefaults.testDefs);
+kettle.test.bootstrapServer(gpii.tests.nexusClient.constructAndDestroy.testDefs);
+fluid.test.runTests(["gpii.tests.nexusClient.noNexusTestTree"]);

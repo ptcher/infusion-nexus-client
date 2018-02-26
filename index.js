@@ -8,5 +8,5 @@ You may obtain a copy of the License at
 https://raw.githubusercontent.com/simonbates/nexus-client/master/LICENSE.txt
 */
 
-require("./src/NexusClientUtils.js");
+require("./src/NexusClient.js");
 require("./src/NexusWebSocketBoundComponent.js");

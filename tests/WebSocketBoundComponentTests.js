@@ -37,7 +37,7 @@ fluid.defaults("gpii.tests.nexusClient.webSocketBoundComponent.testCaseHolder", 
         createClient: null
     },
     components: {
-        client: {
+        boundComponent: {
             type: "gpii.nexusWebSocketBoundComponent",
             createOnEvent: "{tests}.events.createClient",
             options: {
@@ -95,9 +95,9 @@ gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndSendUpdates.testDefs
                 listener: "jqUnit.assert",
                 args: ["WebSocket connected"]
             },
-            // Change the model value in the client
+            // Change the model value in the boundComponent
             {
-                func: "{client}.applier.change(valueA, updated)"
+                func: "{boundComponent}.applier.change(valueA, updated)"
             },
             // Verify that the peer in the Nexus is updated
             {
@@ -115,9 +115,9 @@ gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndSendUpdates.testDefs
                     }
                 ]
             },
-            // Destroy the Nexus peer via the client
+            // Destroy the Nexus peer via the boundComponent
             {
-                func: "{client}.destroyNexusPeerComponent"
+                func: "{boundComponent}.destroyNexusPeerComponent"
             },
             {
                 event: "{gpii.tests.nexus.componentRoot}.nexusWebSocketBoundComponentPeer.events.onDestroy",
@@ -125,7 +125,7 @@ gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndSendUpdates.testDefs
                 args: ["Peer destroyed"]
             },
             {
-                event: "{client}.events.onPeerDestroyed",
+                event: "{boundComponent}.events.onPeerDestroyed",
                 listener: "jqUnit.assert",
                 args: ["Peer destroyed"]
             }
@@ -166,24 +166,24 @@ gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndReceiveUpdates.testD
             {
                 func: "{gpii.tests.nexus.componentRoot}.nexusWebSocketBoundComponentPeer.applier.change(valueA, updated)"
             },
-            // Verify that the client is updated
+            // Verify that the boundComponent is updated
             {
-                changeEvent: "{client}.applier.modelChanged",
+                changeEvent: "{boundComponent}.applier.modelChanged",
                 path: "valueA"
             },
             {
                 func: "jqUnit.assertDeepEq",
                 args: [
-                    "Client model has been updated",
+                    "boundComponent model has been updated",
                     {
                         valueA: "updated"
                     },
-                    "{client}.model"
+                    "{boundComponent}.model"
                 ]
             },
-            // Destroy the Nexus peer via the client
+            // Destroy the Nexus peer via the boundComponent
             {
-                func: "{client}.destroyNexusPeerComponent"
+                func: "{boundComponent}.destroyNexusPeerComponent"
             },
             {
                 event: "{gpii.tests.nexus.componentRoot}.nexusWebSocketBoundComponentPeer.events.onDestroy",
@@ -191,7 +191,7 @@ gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndReceiveUpdates.testD
                 args: ["Peer destroyed"]
             },
             {
-                event: "{client}.events.onPeerDestroyed",
+                event: "{boundComponent}.events.onPeerDestroyed",
                 listener: "jqUnit.assert",
                 args: ["Peer destroyed"]
             }
@@ -211,25 +211,32 @@ gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndSendUpdates.testDe
         clientManagesPeer: false,
         clientSendsChangesToNexus: true,
         clientReceivesChangesFromNexus: false,
+        components: {
+            nexusClient: {
+                type: "gpii.nexusClient",
+                options: {
+                    nexusHost: "localhost",
+                    nexusPort: "{configuration}.options.serverPort"
+                }
+            }
+        },
         sequence: [
             // Construct peer
             {
-                task: "gpii.constructNexusPeer",
+                task: "{nexusClient}.constructComponent",
                 args: [
-                    "localhost",
-                    "{configuration}.options.serverPort",
                     "{tests}.options.testComponentPath",
                     {
                         type: "fluid.modelComponent",
                         model: {
-                            valueA: "constructed before client"
+                            valueA: "constructed before boundComponent"
                         }
                     }
                 ],
                 resolve: "jqUnit.assert",
                 resolveArgs: ["Nexus peer constructed"]
             },
-            // Construct client
+            // Construct boundComponent
             {
                 func: "{tests}.events.createClient.fire"
             },
@@ -238,7 +245,7 @@ gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndSendUpdates.testDe
                 listener: "jqUnit.assert",
                 args: ["WebSocket connected"]
             },
-            // Check that construction of the client didn't alter the peer
+            // Check that construction of the boundComponent didn't alter the peer
             {
                 func: "gpii.test.nexus.assertComponentModel",
                 args: [
@@ -246,13 +253,13 @@ gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndSendUpdates.testDe
                     "{gpii.tests.nexus.componentRoot}",
                     "{tests}.options.testComponentPath",
                     {
-                        valueA: "constructed before client"
+                        valueA: "constructed before boundComponent"
                     }
                 ]
             },
-            // Change the model value in the client
+            // Change the model value in the boundComponent
             {
-                func: "{client}.applier.change(valueA, updated)"
+                func: "{boundComponent}.applier.change(valueA, updated)"
             },
             // Verify that the peer in the Nexus is updated
             {
@@ -286,25 +293,32 @@ gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates.tes
         clientManagesPeer: false,
         clientSendsChangesToNexus: false,
         clientReceivesChangesFromNexus: true,
+        components: {
+            nexusClient: {
+                type: "gpii.nexusClient",
+                options: {
+                    nexusHost: "localhost",
+                    nexusPort: "{configuration}.options.serverPort"
+                }
+            }
+        },
         sequence: [
             // Construct peer
             {
-                task: "gpii.constructNexusPeer",
+                task: "{nexusClient}.constructComponent",
                 args: [
-                    "localhost",
-                    "{configuration}.options.serverPort",
                     "{tests}.options.testComponentPath",
                     {
                         type: "fluid.modelComponent",
                         model: {
-                            valueA: "constructed before client"
+                            valueA: "constructed before boundComponent"
                         }
                     }
                 ],
                 resolve: "jqUnit.assert",
                 resolveArgs: ["Nexus peer constructed"]
             },
-            // Construct client
+            // Construct boundComponent
             {
                 func: "{tests}.events.createClient.fire"
             },
@@ -313,7 +327,7 @@ gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates.tes
                 listener: "jqUnit.assert",
                 args: ["WebSocket connected"]
             },
-            // Check that construction of the client didn't alter the peer
+            // Check that construction of the boundComponent didn't alter the peer
             {
                 func: "gpii.test.nexus.assertComponentModel",
                 args: [
@@ -321,42 +335,42 @@ gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates.tes
                     "{gpii.tests.nexus.componentRoot}",
                     "{tests}.options.testComponentPath",
                     {
-                        valueA: "constructed before client"
+                        valueA: "constructed before boundComponent"
                     }
                 ]
             },
             // We will get a message with the initial peer model value
             {
-                changeEvent: "{client}.applier.modelChanged",
+                changeEvent: "{boundComponent}.applier.modelChanged",
                 path: "valueA"
             },
             {
                 func: "jqUnit.assertDeepEq",
                 args: [
-                    "Client model has been set to the initial peer model value",
+                    "boundComponent model has been set to the initial peer model value",
                     {
-                        valueA: "constructed before client"
+                        valueA: "constructed before boundComponent"
                     },
-                    "{client}.model"
+                    "{boundComponent}.model"
                 ]
             },
             // Change the model value in the Nexus peer
             {
                 func: "{gpii.tests.nexus.componentRoot}.nexusWebSocketBoundComponentPeer.applier.change(valueA, updated)"
             },
-            // Verify that the client is updated
+            // Verify that the boundComponent is updated
             {
-                changeEvent: "{client}.applier.modelChanged",
+                changeEvent: "{boundComponent}.applier.modelChanged",
                 path: "valueA"
             },
             {
                 func: "jqUnit.assertDeepEq",
                 args: [
-                    "Client model has been updated",
+                    "boundComponent model has been updated",
                     {
                         valueA: "updated"
                     },
-                    "{client}.model"
+                    "{boundComponent}.model"
                 ]
             }
         ]
@@ -373,7 +387,7 @@ fluid.defaults("gpii.tests.nexusClient.webSocketBoundComponent.noNexusTestTree",
         createClient: null
     },
     components: {
-        client: {
+        boundComponent: {
             type: "gpii.nexusWebSocketBoundComponent",
             createOnEvent: "{testEnvironment}.events.createClient",
             options: {

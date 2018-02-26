@@ -31,6 +31,15 @@ var WebSocket = WebSocket || fluid.require("ws");
             nexusPeerComponentOptions: null, // Will be used if managesPeer is true
             websocket: null // Will be set at onCreate
         },
+        components: {
+            nexusClient: {
+                type: "gpii.nexusClient",
+                options: {
+                    nexusHost: "{nexusWebSocketBoundComponent}.nexusHost",
+                    nexusPort: "{nexusWebSocketBoundComponent}.nexusPort"
+                }
+            }
+        },
         invokers: {
             nexusMessageListener: {
                 funcName: "gpii.nexusWebSocketBoundComponent.messageListener",
@@ -90,9 +99,7 @@ var WebSocket = WebSocket || fluid.require("ws");
 
     gpii.nexusWebSocketBoundComponent.constructPeer = function (that, onPeerConstructedEvent, onErrorConstructingPeerEvent) {
         if (that.managesPeer) {
-            gpii.constructNexusPeer(
-                that.nexusHost,
-                that.nexusPort,
+            that.nexusClient.constructComponent(
                 that.nexusPeerComponentPath,
                 that.nexusPeerComponentOptions
             ).then(function () {
@@ -107,9 +114,7 @@ var WebSocket = WebSocket || fluid.require("ws");
     };
 
     gpii.nexusWebSocketBoundComponent.destroyPeer = function (that, onPeerDestroyedEvent) {
-        gpii.destroyNexusPeer(
-            that.nexusHost,
-            that.nexusPort,
+        that.nexusClient.destroyComponent(
             that.nexusPeerComponentPath
         ).then(function () {
             onPeerDestroyedEvent.fire();

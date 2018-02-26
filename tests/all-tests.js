@@ -13,7 +13,7 @@ https://raw.githubusercontent.com/simonbates/nexus-client/master/LICENSE.txt
 var fluid = require("infusion");
 
 var tests = [
-    "./NexusClientUtilsTests.js",
+    "./NexusClientTests.js",
     "./WebSocketBoundComponentTests.js"
 ];
 
