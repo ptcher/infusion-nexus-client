@@ -9,5 +9,6 @@ https://raw.githubusercontent.com/simonbates/nexus-client/master/LICENSE.txt
 */
 
 require("./src/NexusClient.js");
+require("./src/NexusClientHttpNodejs.js");
 require("./src/NexusWebSocketBoundComponent.js");
 require("./src/NexusConfigLoader");
