@@ -32,7 +32,7 @@ var fluid = fluid || require("infusion");
             loadConfig: {
                 funcName: "gpii.nexusConfigLoader.loadConfig",
                 args: ["{that}", "{arguments}.0"]
-                // configuration
+                // configuration {Object}
             }
         }
     });

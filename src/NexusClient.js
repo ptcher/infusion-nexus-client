@@ -33,11 +33,12 @@ var fluid = fluid || require("infusion");
 
     fluid.defaults("gpii.nexusClient", {
         gradeNames: "fluid.component",
+        httpGrade: "gpii.nexusClient.http.nodejs",
         nexusHost: "localhost",
         nexusPort: 9081,
         components: {
             http: {
-                type: "gpii.nexusClient.http.nodejs"
+                type: "{that}.options.httpGrade"
             }
         },
         invokers: {

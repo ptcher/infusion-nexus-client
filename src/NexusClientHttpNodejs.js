@@ -29,9 +29,9 @@ gpii.nexusClient.http.nodejs.request = function (options) {
     var promise = fluid.promise();
 
     var nodejsRequestOptions = {
+        method: options.method,
         host: options.host,
         port: options.port,
-        method: options.method,
         path: options.path
     };
 
