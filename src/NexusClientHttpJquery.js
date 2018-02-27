@@ -43,7 +43,7 @@ https://raw.githubusercontent.com/simonbates/nexus-client/master/LICENSE.txt
             .done(function () {
                 promise.resolve(null);
             })
-            .fail(function (jqXHR, textStatus, errorThrown) {
+            .fail(function (jqXHR) {
                 promise.reject(gpii.nexusClient.http.buildErrorObject(options, jqXHR.status));
             });
 
