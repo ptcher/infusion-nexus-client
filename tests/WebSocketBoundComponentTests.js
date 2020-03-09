@@ -5,29 +5,28 @@ Licensed under the New BSD license. You may not use this file except in
 compliance with this License.
 
 You may obtain a copy of the License at
-https://raw.githubusercontent.com/simonbates/nexus-client/master/LICENSE.txt
+https://raw.githubusercontent.com/fluid-project/infusion-nexus-client/master/LICENSE.txt
 */
 
 "use strict";
 
 var fluid = require("infusion"),
-    kettle = require("kettle"),
-    gpii = fluid.registerNamespace("gpii");
+    kettle = require("kettle");
 
 require("../index.js");
 // TODO: Is using NexusTestUtils.js reasonable?
-fluid.require("%gpii-nexus/src/test/NexusTestUtils.js");
+fluid.require("%infusion-nexus/src/test/NexusTestUtils.js");
 
 kettle.loadTestingSupport();
 
-fluid.registerNamespace("gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndSendUpdates");
-fluid.registerNamespace("gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndReceiveUpdates");
-fluid.registerNamespace("gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndSendUpdates");
-fluid.registerNamespace("gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates");
+fluid.registerNamespace("fluid.tests.nexusClient.webSocketBoundComponent.managePeerAndSendUpdates");
+fluid.registerNamespace("fluid.tests.nexusClient.webSocketBoundComponent.managePeerAndReceiveUpdates");
+fluid.registerNamespace("fluid.tests.nexusClient.webSocketBoundComponent.noManagePeerAndSendUpdates");
+fluid.registerNamespace("fluid.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates");
 
 // Base testCaseHolder
 
-fluid.defaults("gpii.tests.nexusClient.webSocketBoundComponent.testCaseHolder", {
+fluid.defaults("fluid.tests.nexusClient.webSocketBoundComponent.testCaseHolder", {
     gradeNames: ["gpii.test.nexus.testCaseHolder"],
     testComponentPath: "nexusWebSocketBoundComponentPeer",
     clientManagesPeer: false,
@@ -38,7 +37,7 @@ fluid.defaults("gpii.tests.nexusClient.webSocketBoundComponent.testCaseHolder", 
     },
     components: {
         client: {
-            type: "gpii.nexusWebSocketBoundComponent",
+            type: "fluid.nexusWebSocketBoundComponent",
             createOnEvent: "{tests}.events.createClient",
             options: {
                 members: {
@@ -66,14 +65,14 @@ fluid.defaults("gpii.tests.nexusClient.webSocketBoundComponent.testCaseHolder", 
 
 // Tests
 
-gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndSendUpdates.testDefs = [
+fluid.tests.nexusClient.webSocketBoundComponent.managePeerAndSendUpdates.testDefs = [
     {
         name: "nexusWebSocketBoundComponent manage peer and send updates tests",
-        gradeNames: "gpii.tests.nexusClient.webSocketBoundComponent.testCaseHolder",
+        gradeNames: "fluid.tests.nexusClient.webSocketBoundComponent.testCaseHolder",
         expect: 6,
         config: {
             configName: "gpii.tests.nexus.config",
-            configPath: "%gpii-nexus/tests/configs"
+            configPath: "%infusion-nexus/tests/configs"
         },
         clientManagesPeer: true,
         clientSendsChangesToNexus: true,
@@ -91,7 +90,7 @@ gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndSendUpdates.testDefs
                 func: "{tests}.events.createClient.fire"
             },
             {
-                event: "{that gpii.nexusWebSocketBoundComponent}.events.onWebsocketConnected",
+                event: "{that fluid.nexusWebSocketBoundComponent}.events.onWebsocketConnected",
                 listener: "jqUnit.assert",
                 args: ["WebSocket connected"]
             },
@@ -133,14 +132,14 @@ gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndSendUpdates.testDefs
     }
 ];
 
-gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndReceiveUpdates.testDefs = [
+fluid.tests.nexusClient.webSocketBoundComponent.managePeerAndReceiveUpdates.testDefs = [
     {
         name: "nexusWebSocketBoundComponent manage peer and receive updates tests",
-        gradeNames: "gpii.tests.nexusClient.webSocketBoundComponent.testCaseHolder",
+        gradeNames: "fluid.tests.nexusClient.webSocketBoundComponent.testCaseHolder",
         expect: 5,
         config: {
             configName: "gpii.tests.nexus.config",
-            configPath: "%gpii-nexus/tests/configs"
+            configPath: "%infusion-nexus/tests/configs"
         },
         clientManagesPeer: true,
         clientSendsChangesToNexus: false,
@@ -158,7 +157,7 @@ gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndReceiveUpdates.testD
                 func: "{tests}.events.createClient.fire"
             },
             {
-                event: "{that gpii.nexusWebSocketBoundComponent}.events.onWebsocketConnected",
+                event: "{that fluid.nexusWebSocketBoundComponent}.events.onWebsocketConnected",
                 listener: "jqUnit.assert",
                 args: ["WebSocket connected"]
             },
@@ -199,14 +198,14 @@ gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndReceiveUpdates.testD
     }
 ];
 
-gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndSendUpdates.testDefs = [
+fluid.tests.nexusClient.webSocketBoundComponent.noManagePeerAndSendUpdates.testDefs = [
     {
         name: "nexusWebSocketBoundComponent do not manage peer and send updates tests",
-        gradeNames: "gpii.tests.nexusClient.webSocketBoundComponent.testCaseHolder",
+        gradeNames: "fluid.tests.nexusClient.webSocketBoundComponent.testCaseHolder",
         expect: 6,
         config: {
             configName: "gpii.tests.nexus.config",
-            configPath: "%gpii-nexus/tests/configs"
+            configPath: "%infusion-nexus/tests/configs"
         },
         clientManagesPeer: false,
         clientSendsChangesToNexus: true,
@@ -214,7 +213,7 @@ gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndSendUpdates.testDe
         sequence: [
             // Construct peer
             {
-                task: "gpii.constructNexusPeer",
+                task: "fluid.constructNexusPeer",
                 args: [
                     "localhost",
                     "{configuration}.options.serverPort",
@@ -234,7 +233,7 @@ gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndSendUpdates.testDe
                 func: "{tests}.events.createClient.fire"
             },
             {
-                event: "{that gpii.nexusWebSocketBoundComponent}.events.onWebsocketConnected",
+                event: "{that fluid.nexusWebSocketBoundComponent}.events.onWebsocketConnected",
                 listener: "jqUnit.assert",
                 args: ["WebSocket connected"]
             },
@@ -274,14 +273,14 @@ gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndSendUpdates.testDe
     }
 ];
 
-gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates.testDefs = [
+fluid.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates.testDefs = [
     {
         name: "nexusWebSocketBoundComponent do not manage peer and receive updates tests",
-        gradeNames: "gpii.tests.nexusClient.webSocketBoundComponent.testCaseHolder",
+        gradeNames: "fluid.tests.nexusClient.webSocketBoundComponent.testCaseHolder",
         expect: 6,
         config: {
             configName: "gpii.tests.nexus.config",
-            configPath: "%gpii-nexus/tests/configs"
+            configPath: "%infusion-nexus/tests/configs"
         },
         clientManagesPeer: false,
         clientSendsChangesToNexus: false,
@@ -289,7 +288,7 @@ gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates.tes
         sequence: [
             // Construct peer
             {
-                task: "gpii.constructNexusPeer",
+                task: "fluid.constructNexusPeer",
                 args: [
                     "localhost",
                     "{configuration}.options.serverPort",
@@ -309,7 +308,7 @@ gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates.tes
                 func: "{tests}.events.createClient.fire"
             },
             {
-                event: "{that gpii.nexusWebSocketBoundComponent}.events.onWebsocketConnected",
+                event: "{that fluid.nexusWebSocketBoundComponent}.events.onWebsocketConnected",
                 listener: "jqUnit.assert",
                 args: ["WebSocket connected"]
             },
@@ -365,7 +364,7 @@ gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates.tes
 
 // Test error cases with no Nexus running
 
-fluid.defaults("gpii.tests.nexusClient.webSocketBoundComponent.noNexusTestTree", {
+fluid.defaults("fluid.tests.nexusClient.webSocketBoundComponent.noNexusTestTree", {
     gradeNames: ["fluid.test.testEnvironment"],
     serverHost: "localhost",
     serverPort: 8082,
@@ -374,7 +373,7 @@ fluid.defaults("gpii.tests.nexusClient.webSocketBoundComponent.noNexusTestTree",
     },
     components: {
         client: {
-            type: "gpii.nexusWebSocketBoundComponent",
+            type: "fluid.nexusWebSocketBoundComponent",
             createOnEvent: "{testEnvironment}.events.createClient",
             options: {
                 members: {
@@ -389,12 +388,12 @@ fluid.defaults("gpii.tests.nexusClient.webSocketBoundComponent.noNexusTestTree",
             }
         },
         noNexusTester: {
-            type: "gpii.tests.nexusClient.webSocketBoundComponent.noNexusTester"
+            type: "fluid.tests.nexusClient.webSocketBoundComponent.noNexusTester"
         }
     }
 });
 
-fluid.defaults("gpii.tests.nexusClient.webSocketBoundComponent.noNexusTester", {
+fluid.defaults("fluid.tests.nexusClient.webSocketBoundComponent.noNexusTester", {
     gradeNames: ["fluid.test.testCaseHolder"],
     modules: [{
         name: "nexusWebSocketBoundComponent No Nexus tests",
@@ -407,7 +406,7 @@ fluid.defaults("gpii.tests.nexusClient.webSocketBoundComponent.noNexusTester", {
                         func: "{testEnvironment}.events.createClient.fire"
                     },
                     {
-                        event: "{testEnvironment gpii.nexusWebSocketBoundComponent}.events.onErrorConstructingPeer",
+                        event: "{testEnvironment fluid.nexusWebSocketBoundComponent}.events.onErrorConstructingPeer",
                         listener: "jqUnit.assert",
                         args: ["Error constructing peer"]
                     }
@@ -417,8 +416,8 @@ fluid.defaults("gpii.tests.nexusClient.webSocketBoundComponent.noNexusTester", {
     }]
 });
 
-kettle.test.bootstrapServer(gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndSendUpdates.testDefs);
-kettle.test.bootstrapServer(gpii.tests.nexusClient.webSocketBoundComponent.managePeerAndReceiveUpdates.testDefs);
-kettle.test.bootstrapServer(gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndSendUpdates.testDefs);
-kettle.test.bootstrapServer(gpii.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates.testDefs);
-fluid.test.runTests(["gpii.tests.nexusClient.webSocketBoundComponent.noNexusTestTree"]);
+kettle.test.bootstrapServer(fluid.tests.nexusClient.webSocketBoundComponent.managePeerAndSendUpdates.testDefs);
+kettle.test.bootstrapServer(fluid.tests.nexusClient.webSocketBoundComponent.managePeerAndReceiveUpdates.testDefs);
+kettle.test.bootstrapServer(fluid.tests.nexusClient.webSocketBoundComponent.noManagePeerAndSendUpdates.testDefs);
+kettle.test.bootstrapServer(fluid.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates.testDefs);
+fluid.test.runTests(["fluid.tests.nexusClient.webSocketBoundComponent.noNexusTestTree"]);

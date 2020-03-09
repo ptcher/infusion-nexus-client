@@ -1,11 +1,11 @@
 {
-    "name": "gpii-nexus-client",
+    "name": "infusion-nexus-client",
     "version": "0.1.0",
     "license": "BSD-3-Clause",
-    "author": "GPII",
+    "author": "fluid-project",
     "repository": {
         "type": "git",
-        "url": "https://github.com/simonbates/nexus-client.git"
+        "url": "https://github.com/fluid-project/infusion-nexus-client.git"
     },
     "dependencies": {
         "infusion": "3.0.0-dev.20170727T201856Z.8c48d077a",
@@ -15,7 +15,7 @@
         "grunt": "0.4.5",
         "grunt-contrib-jshint": "1.0.0",
         "grunt-jsonlint": "1.0.7",
-        "nexus": "GPII/nexus",
+        "infusion-nexus": "fluid-project/infusion-nexus#0.2.0",
         "node-jqunit": "1.1.4"
     },
     "private": true

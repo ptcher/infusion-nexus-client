@@ -5,18 +5,17 @@ Licensed under the New BSD license. You may not use this file except in
 compliance with this License.
 
 You may obtain a copy of the License at
-https://raw.githubusercontent.com/simonbates/nexus-client/master/LICENSE.txt
+https://raw.githubusercontent.com/fluid-project/infusion-nexus-client/master/LICENSE.txt
 */
 
 "use strict";
 
 var fluid = require("infusion");
-var gpii = fluid.registerNamespace("gpii");
 var http = require("http");
 
-fluid.registerNamespace("gpii.nexusClientUtils");
+fluid.registerNamespace("fluid.nexusClientUtils");
 
-gpii.nexusClientUtils.sendRequestWithJsonBody = function (host, port, options, body) {
+fluid.nexusClientUtils.sendRequestWithJsonBody = function (host, port, options, body) {
     options = fluid.extend({
         host: host,
         port: port,
@@ -34,7 +33,7 @@ gpii.nexusClientUtils.sendRequestWithJsonBody = function (host, port, options, b
     });
 
     req.on("error", function (error) {
-        promise.reject(gpii.nexusClientUtils.buildErrorObject(options, error));
+        promise.reject(fluid.nexusClientUtils.buildErrorObject(options, error));
     });
 
     req.write(JSON.stringify(body));
@@ -43,7 +42,7 @@ gpii.nexusClientUtils.sendRequestWithJsonBody = function (host, port, options, b
     return promise;
 };
 
-gpii.nexusClientUtils.buildErrorObject = function (requestOptions, error) {
+fluid.nexusClientUtils.buildErrorObject = function (requestOptions, error) {
     return {
         isError: true,
         message: fluid.stringTemplate("Error: %code %method %host:%port%path", {
@@ -56,21 +55,21 @@ gpii.nexusClientUtils.buildErrorObject = function (requestOptions, error) {
     };
 };
 
-gpii.writeNexusDefaults = function (host, port, gradeName, gradeDefaults) {
-    return gpii.nexusClientUtils.sendRequestWithJsonBody(host, port, {
+fluid.writeNexusDefaults = function (host, port, gradeName, gradeDefaults) {
+    return fluid.nexusClientUtils.sendRequestWithJsonBody(host, port, {
         method: "PUT",
         path: "/defaults/" + gradeName
     }, gradeDefaults);
 };
 
-gpii.constructNexusPeer = function (host, port, componentPath, componentOptions) {
-    return gpii.nexusClientUtils.sendRequestWithJsonBody(host, port, {
+fluid.constructNexusPeer = function (host, port, componentPath, componentOptions) {
+    return fluid.nexusClientUtils.sendRequestWithJsonBody(host, port, {
         method: "POST",
         path: "/components/" + componentPath
     }, componentOptions);
 };
 
-gpii.destroyNexusPeer = function (host, port, componentPath) {
+fluid.destroyNexusPeer = function (host, port, componentPath) {
     var options = {
         host: host,
         port: port,
@@ -87,7 +86,7 @@ gpii.destroyNexusPeer = function (host, port, componentPath) {
     });
 
     req.on("error", function (error) {
-        promise.reject(gpii.nexusClientUtils.buildErrorObject(options, error));
+        promise.reject(fluid.nexusClientUtils.buildErrorObject(options, error));
     });
 
     req.end();
