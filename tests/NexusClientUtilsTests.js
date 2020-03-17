@@ -37,10 +37,10 @@ fluid.tests.nexusClientUtils.componentOptions = {
 fluid.tests.nexusClientUtils.writeNexusDefaults.testDefs = [
     {
         name: "NexusClientUtils writeNexusDefaults tests",
-        gradeNames: "gpii.test.nexus.testCaseHolder",
+        gradeNames: "fluid.test.nexus.testCaseHolder",
         expect: 4,
         config: {
-            configName: "gpii.tests.nexus.config",
+            configName: "fluid.tests.nexus.config",
             configPath: "%infusion-nexus/tests/configs"
         },
         testGradeName: "fluid.tests.nexusClientUtils.newGrade",
@@ -61,7 +61,7 @@ fluid.tests.nexusClientUtils.writeNexusDefaults.testDefs = [
             },
             {
                 event: "{readDefaultsRequest}.events.onComplete",
-                listener: "gpii.test.nexus.verifyReadDefaultsResponse",
+                listener: "fluid.test.nexus.verifyReadDefaultsResponse",
                 args: [
                     "{arguments}.0",
                     "{readDefaultsRequest}",
@@ -78,20 +78,20 @@ fluid.tests.nexusClientUtils.writeNexusDefaults.testDefs = [
 fluid.tests.nexusClientUtils.constructAndDestroy.testDefs = [
     {
         name: "NexusClientUtils construct and destroy tests",
-        gradeNames: "gpii.test.nexus.testCaseHolder",
+        gradeNames: "fluid.test.nexus.testCaseHolder",
         expect: 6,
         config: {
-            configName: "gpii.tests.nexus.config",
+            configName: "fluid.tests.nexus.config",
             configPath: "%infusion-nexus/tests/configs"
         },
         testComponentPath: "nexusClientUtilsConstructAndDestroyTestsComponentOne",
         sequence: [
             // Verify that the component doesn't already exist
             {
-                func: "gpii.test.nexus.assertNoComponentAtPath",
+                func: "fluid.test.nexus.assertNoComponentAtPath",
                 args: [
                     "Component not yet constructed",
-                    "{gpii.tests.nexus.componentRoot}",
+                    "{fluid.tests.nexus.componentRoot}",
                     "{tests}.options.testComponentPath"
                 ]
             },
@@ -108,10 +108,10 @@ fluid.tests.nexusClientUtils.constructAndDestroy.testDefs = [
                 resolveArgs: ["Component construct promise resolved"]
             },
             {
-                func: "gpii.test.nexus.assertComponentModel",
+                func: "fluid.test.nexus.assertComponentModel",
                 args: [
                     "Model is as expected",
-                    "{gpii.tests.nexus.componentRoot}",
+                    "{fluid.tests.nexus.componentRoot}",
                     "{tests}.options.testComponentPath",
                     fluid.tests.nexusClientUtils.componentOptions.model
                 ]
@@ -128,10 +128,10 @@ fluid.tests.nexusClientUtils.constructAndDestroy.testDefs = [
                 resolveArgs: ["Component destroy promise resolved"]
             },
             {
-                func: "gpii.test.nexus.assertNoComponentAtPath",
+                func: "fluid.test.nexus.assertNoComponentAtPath",
                 args: [
                     "Component has been destroyed",
-                    "{gpii.tests.nexus.componentRoot}",
+                    "{fluid.tests.nexus.componentRoot}",
                     "{tests}.options.testComponentPath"
                 ]
             }

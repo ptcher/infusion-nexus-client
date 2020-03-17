@@ -1,22 +1,25 @@
 {
     "name": "infusion-nexus-client",
-    "version": "0.1.0",
+    "version": "0.3.0",
     "license": "BSD-3-Clause",
     "author": "fluid-project",
     "repository": {
         "type": "git",
         "url": "https://github.com/fluid-project/infusion-nexus-client.git"
     },
+    "scripts": {
+        "test": "node tests/all-tests.js"
+    },
     "dependencies": {
-        "infusion": "3.0.0-dev.20170727T201856Z.8c48d077a",
-        "ws": "2.0.3"
+        "infusion": "3.0.0-dev.20200214T151835Z.ab768289a.FLUID-6145",
+        "ws": "7.2.3"
     },
     "devDependencies": {
-        "grunt": "0.4.5",
-        "grunt-contrib-jshint": "1.0.0",
-        "grunt-jsonlint": "1.0.7",
-        "infusion-nexus": "fluid-project/infusion-nexus#0.2.0",
-        "node-jqunit": "1.1.4"
-    },
-    "private": true
+        "grunt": "1.1.0",
+        "grunt-contrib-jshint": "2.1.0",
+        "grunt-jsonlint": "2.1.2",
+        "infusion-nexus": "0.3.0-dev.20200305T224303Z.59892d3",
+        "kettle": "1.12.0-dev.20191220T164344Z.f1fef17.FLUID-6145",
+        "node-jqunit": "1.1.8"
+    }
 }

@@ -27,7 +27,7 @@ fluid.registerNamespace("fluid.tests.nexusClient.webSocketBoundComponent.noManag
 // Base testCaseHolder
 
 fluid.defaults("fluid.tests.nexusClient.webSocketBoundComponent.testCaseHolder", {
-    gradeNames: ["gpii.test.nexus.testCaseHolder"],
+    gradeNames: ["fluid.test.nexus.testCaseHolder"],
     testComponentPath: "nexusWebSocketBoundComponentPeer",
     clientManagesPeer: false,
     clientSendsChangesToNexus: false,
@@ -71,7 +71,7 @@ fluid.tests.nexusClient.webSocketBoundComponent.managePeerAndSendUpdates.testDef
         gradeNames: "fluid.tests.nexusClient.webSocketBoundComponent.testCaseHolder",
         expect: 6,
         config: {
-            configName: "gpii.tests.nexus.config",
+            configName: "fluid.tests.nexus.config",
             configPath: "%infusion-nexus/tests/configs"
         },
         clientManagesPeer: true,
@@ -79,10 +79,10 @@ fluid.tests.nexusClient.webSocketBoundComponent.managePeerAndSendUpdates.testDef
         clientReceivesChangesFromNexus: false,
         sequence: [
             {
-                func: "gpii.test.nexus.assertNoComponentAtPath",
+                func: "fluid.test.nexus.assertNoComponentAtPath",
                 args: [
                     "Peer not yet constructed",
-                    "{gpii.tests.nexus.componentRoot}",
+                    "{fluid.tests.nexus.componentRoot}",
                     "{tests}.options.testComponentPath"
                 ]
             },
@@ -100,14 +100,14 @@ fluid.tests.nexusClient.webSocketBoundComponent.managePeerAndSendUpdates.testDef
             },
             // Verify that the peer in the Nexus is updated
             {
-                changeEvent: "{gpii.tests.nexus.componentRoot}.nexusWebSocketBoundComponentPeer.applier.modelChanged",
+                changeEvent: "{fluid.tests.nexus.componentRoot}.nexusWebSocketBoundComponentPeer.applier.modelChanged",
                 path: "valueA"
             },
             {
-                func: "gpii.test.nexus.assertComponentModel",
+                func: "fluid.test.nexus.assertComponentModel",
                 args: [
                     "Peer model has been updated",
-                    "{gpii.tests.nexus.componentRoot}",
+                    "{fluid.tests.nexus.componentRoot}",
                     "{tests}.options.testComponentPath",
                     {
                         valueA: "updated"
@@ -119,7 +119,7 @@ fluid.tests.nexusClient.webSocketBoundComponent.managePeerAndSendUpdates.testDef
                 func: "{client}.destroyNexusPeerComponent"
             },
             {
-                event: "{gpii.tests.nexus.componentRoot}.nexusWebSocketBoundComponentPeer.events.onDestroy",
+                event: "{fluid.tests.nexus.componentRoot}.nexusWebSocketBoundComponentPeer.events.onDestroy",
                 listener: "jqUnit.assert",
                 args: ["Peer destroyed"]
             },
@@ -138,7 +138,7 @@ fluid.tests.nexusClient.webSocketBoundComponent.managePeerAndReceiveUpdates.test
         gradeNames: "fluid.tests.nexusClient.webSocketBoundComponent.testCaseHolder",
         expect: 5,
         config: {
-            configName: "gpii.tests.nexus.config",
+            configName: "fluid.tests.nexus.config",
             configPath: "%infusion-nexus/tests/configs"
         },
         clientManagesPeer: true,
@@ -146,10 +146,10 @@ fluid.tests.nexusClient.webSocketBoundComponent.managePeerAndReceiveUpdates.test
         clientReceivesChangesFromNexus: true,
         sequence: [
             {
-                func: "gpii.test.nexus.assertNoComponentAtPath",
+                func: "fluid.test.nexus.assertNoComponentAtPath",
                 args: [
                     "Peer not yet constructed",
-                    "{gpii.tests.nexus.componentRoot}",
+                    "{fluid.tests.nexus.componentRoot}",
                     "{tests}.options.testComponentPath"
                 ]
             },
@@ -163,7 +163,7 @@ fluid.tests.nexusClient.webSocketBoundComponent.managePeerAndReceiveUpdates.test
             },
             // Change the model value in the Nexus peer
             {
-                func: "{gpii.tests.nexus.componentRoot}.nexusWebSocketBoundComponentPeer.applier.change(valueA, updated)"
+                func: "{fluid.tests.nexus.componentRoot}.nexusWebSocketBoundComponentPeer.applier.change(valueA, updated)"
             },
             // Verify that the client is updated
             {
@@ -185,7 +185,7 @@ fluid.tests.nexusClient.webSocketBoundComponent.managePeerAndReceiveUpdates.test
                 func: "{client}.destroyNexusPeerComponent"
             },
             {
-                event: "{gpii.tests.nexus.componentRoot}.nexusWebSocketBoundComponentPeer.events.onDestroy",
+                event: "{fluid.tests.nexus.componentRoot}.nexusWebSocketBoundComponentPeer.events.onDestroy",
                 listener: "jqUnit.assert",
                 args: ["Peer destroyed"]
             },
@@ -204,7 +204,7 @@ fluid.tests.nexusClient.webSocketBoundComponent.noManagePeerAndSendUpdates.testD
         gradeNames: "fluid.tests.nexusClient.webSocketBoundComponent.testCaseHolder",
         expect: 6,
         config: {
-            configName: "gpii.tests.nexus.config",
+            configName: "fluid.tests.nexus.config",
             configPath: "%infusion-nexus/tests/configs"
         },
         clientManagesPeer: false,
@@ -239,10 +239,10 @@ fluid.tests.nexusClient.webSocketBoundComponent.noManagePeerAndSendUpdates.testD
             },
             // Check that construction of the client didn't alter the peer
             {
-                func: "gpii.test.nexus.assertComponentModel",
+                func: "fluid.test.nexus.assertComponentModel",
                 args: [
                     "Peer model is unchanged",
-                    "{gpii.tests.nexus.componentRoot}",
+                    "{fluid.tests.nexus.componentRoot}",
                     "{tests}.options.testComponentPath",
                     {
                         valueA: "constructed before client"
@@ -255,14 +255,14 @@ fluid.tests.nexusClient.webSocketBoundComponent.noManagePeerAndSendUpdates.testD
             },
             // Verify that the peer in the Nexus is updated
             {
-                changeEvent: "{gpii.tests.nexus.componentRoot}.nexusWebSocketBoundComponentPeer.applier.modelChanged",
+                changeEvent: "{fluid.tests.nexus.componentRoot}.nexusWebSocketBoundComponentPeer.applier.modelChanged",
                 path: "valueA"
             },
             {
-                func: "gpii.test.nexus.assertComponentModel",
+                func: "fluid.test.nexus.assertComponentModel",
                 args: [
                     "Peer model has been updated",
-                    "{gpii.tests.nexus.componentRoot}",
+                    "{fluid.tests.nexus.componentRoot}",
                     "{tests}.options.testComponentPath",
                     {
                         valueA: "updated"
@@ -279,7 +279,7 @@ fluid.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates.te
         gradeNames: "fluid.tests.nexusClient.webSocketBoundComponent.testCaseHolder",
         expect: 6,
         config: {
-            configName: "gpii.tests.nexus.config",
+            configName: "fluid.tests.nexus.config",
             configPath: "%infusion-nexus/tests/configs"
         },
         clientManagesPeer: false,
@@ -314,10 +314,10 @@ fluid.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates.te
             },
             // Check that construction of the client didn't alter the peer
             {
-                func: "gpii.test.nexus.assertComponentModel",
+                func: "fluid.test.nexus.assertComponentModel",
                 args: [
                     "Peer model is unchanged",
-                    "{gpii.tests.nexus.componentRoot}",
+                    "{fluid.tests.nexus.componentRoot}",
                     "{tests}.options.testComponentPath",
                     {
                         valueA: "constructed before client"
@@ -341,7 +341,7 @@ fluid.tests.nexusClient.webSocketBoundComponent.noManagePeerAndReceiveUpdates.te
             },
             // Change the model value in the Nexus peer
             {
-                func: "{gpii.tests.nexus.componentRoot}.nexusWebSocketBoundComponentPeer.applier.change(valueA, updated)"
+                func: "{fluid.tests.nexus.componentRoot}.nexusWebSocketBoundComponentPeer.applier.change(valueA, updated)"
             },
             // Verify that the client is updated
             {
