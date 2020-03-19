@@ -5,7 +5,7 @@ Licensed under the New BSD license. You may not use this file except in
 compliance with this License.
 
 You may obtain a copy of the License at
-https://raw.githubusercontent.com/simonbates/nexus-client/master/LICENSE.txt
+https://raw.githubusercontent.com/fluid-project/infusion-nexus-client/master/LICENSE.txt
 */
 
 "use strict";
@@ -16,9 +16,7 @@ var WebSocket = WebSocket || fluid.require("ws");
 // TODO: Support peer management in browser
 
 (function () {
-    var gpii = fluid.registerNamespace("gpii");
-
-    fluid.defaults("gpii.nexusWebSocketBoundComponent", {
+    fluid.defaults("fluid.nexusWebSocketBoundComponent", {
         gradeNames: "fluid.modelComponent",
         members: {
             nexusHost: "localhost",
@@ -33,7 +31,7 @@ var WebSocket = WebSocket || fluid.require("ws");
         },
         invokers: {
             nexusMessageListener: {
-                funcName: "gpii.nexusWebSocketBoundComponent.messageListener",
+                funcName: "fluid.nexusWebSocketBoundComponent.messageListener",
                 args: [
                     "{that}",
                     "{that}.nexusBoundModelPath",
@@ -41,14 +39,14 @@ var WebSocket = WebSocket || fluid.require("ws");
                 ]
             },
             sendModelChangeToNexus: {
-                funcName: "gpii.nexusWebSocketBoundComponent.sendModelChangeToNexus",
+                funcName: "fluid.nexusWebSocketBoundComponent.sendModelChangeToNexus",
                 args: [
                     "{that}.websocket",
                     "{arguments}.0" // value
                 ]
             },
             destroyNexusPeerComponent: {
-                funcName: "gpii.nexusWebSocketBoundComponent.destroyPeer",
+                funcName: "fluid.nexusWebSocketBoundComponent.destroyPeer",
                 args: [ "{that}", "{that}.events.onPeerDestroyed" ]
             }
         },
@@ -60,7 +58,7 @@ var WebSocket = WebSocket || fluid.require("ws");
         },
         listeners: {
             "onCreate.constructPeer": {
-                funcName: "gpii.nexusWebSocketBoundComponent.constructPeer",
+                funcName: "fluid.nexusWebSocketBoundComponent.constructPeer",
                 args: [
                     "{that}",
                     "{that}.events.onPeerConstructed",
@@ -68,7 +66,7 @@ var WebSocket = WebSocket || fluid.require("ws");
                 ]
             },
             "onPeerConstructed.bindNexusModel": {
-                funcName: "gpii.nexusWebSocketBoundComponent.bindModel",
+                funcName: "fluid.nexusWebSocketBoundComponent.bindModel",
                 args: [
                     "{that}",
                     "{that}.receivesChangesFromNexus",
@@ -77,7 +75,7 @@ var WebSocket = WebSocket || fluid.require("ws");
                 ]
             },
             "onWebsocketConnected.registerModelListenerForNexus": {
-                funcName: "gpii.nexusWebSocketBoundComponent.registerModelListener",
+                funcName: "fluid.nexusWebSocketBoundComponent.registerModelListener",
                 args: [
                     "{that}.sendsChangesToNexus",
                     "{that}.applier",
@@ -88,9 +86,9 @@ var WebSocket = WebSocket || fluid.require("ws");
         }
     });
 
-    gpii.nexusWebSocketBoundComponent.constructPeer = function (that, onPeerConstructedEvent, onErrorConstructingPeerEvent) {
+    fluid.nexusWebSocketBoundComponent.constructPeer = function (that, onPeerConstructedEvent, onErrorConstructingPeerEvent) {
         if (that.managesPeer) {
-            gpii.constructNexusPeer(
+            fluid.constructNexusPeer(
                 that.nexusHost,
                 that.nexusPort,
                 that.nexusPeerComponentPath,
@@ -106,8 +104,8 @@ var WebSocket = WebSocket || fluid.require("ws");
         }
     };
 
-    gpii.nexusWebSocketBoundComponent.destroyPeer = function (that, onPeerDestroyedEvent) {
-        gpii.destroyNexusPeer(
+    fluid.nexusWebSocketBoundComponent.destroyPeer = function (that, onPeerDestroyedEvent) {
+        fluid.destroyNexusPeer(
             that.nexusHost,
             that.nexusPort,
             that.nexusPeerComponentPath
@@ -116,7 +114,7 @@ var WebSocket = WebSocket || fluid.require("ws");
         });
     };
 
-    gpii.nexusWebSocketBoundComponent.bindModel = function (that, shouldRegisterMessageListener, messageListener, onWebsocketConnectedEvent) {
+    fluid.nexusWebSocketBoundComponent.bindModel = function (that, shouldRegisterMessageListener, messageListener, onWebsocketConnectedEvent) {
         var bindModelUrl = fluid.stringTemplate("ws://%host:%port/bindModel/%componentPath/%modelPath", {
             host: that.nexusHost,
             port: that.nexusPort,
@@ -132,26 +130,26 @@ var WebSocket = WebSocket || fluid.require("ws");
         };
     };
 
-    gpii.nexusWebSocketBoundComponent.registerModelListener = function (shouldRegisterModelChangeListener, applier, modelPath, modelChangeListener) {
+    fluid.nexusWebSocketBoundComponent.registerModelListener = function (shouldRegisterModelChangeListener, applier, modelPath, modelChangeListener) {
         if (shouldRegisterModelChangeListener) {
             // TODO: Segs here?
             applier.modelChanged.addListener(modelPath, modelChangeListener);
         }
     };
 
-    gpii.nexusWebSocketBoundComponent.messageListener = function (that, modelPath, evt) {
+    fluid.nexusWebSocketBoundComponent.messageListener = function (that, modelPath, evt) {
         var value = JSON.parse(evt.data);
-        gpii.nexusWebSocketBoundComponent.updateModel(that, modelPath, value);
+        fluid.nexusWebSocketBoundComponent.updateModel(that, modelPath, value);
     };
 
-    gpii.nexusWebSocketBoundComponent.sendModelChangeToNexus =  function (websocket, value) {
+    fluid.nexusWebSocketBoundComponent.sendModelChangeToNexus =  function (websocket, value) {
         websocket.send(JSON.stringify({
             path: "",
             value: value
         }));
     };
 
-    gpii.nexusWebSocketBoundComponent.updateModel = function (component, modelPath, value) {
+    fluid.nexusWebSocketBoundComponent.updateModel = function (component, modelPath, value) {
         var oldValue = fluid.get(component.model, modelPath);
         var changes = fluid.modelPairToChanges(value, oldValue, modelPath);
         fluid.fireChanges(component.applier, changes);
