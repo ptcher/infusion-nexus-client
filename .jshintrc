@@ -29,7 +29,6 @@
 
     "globals": {
         "fluid": false,
-        "gpii": true,
         "JSON": false
     }
 }
